@@ -23,6 +23,8 @@ backoff==2.2.1
     # via gql
 black==24.1.1
     # via ai-kickstart-mlops (pyproject.toml)
+case-converter==1.1.0
+    # via ai-kickstart-mlops (pyproject.toml)
 cattrs==23.2.3
     # via
     #   lsprotocol
@@ -57,7 +59,9 @@ docstring-parser==0.15
 fsspec==2024.2.0
     # via universal-pathlib
 gql[requests]==3.5.0
-    # via dagster-graphql
+    # via
+    #   dagster-graphql
+    #   gql
 graphene==3.3
     # via dagster-graphql
 graphql-core==3.2.3
@@ -104,11 +108,15 @@ multidict==6.0.5
     # via yarl
 mypy-extensions==1.0.0
     # via black
+numpy==1.26.4
+    # via pandas
 packaging==23.2
     # via
     #   black
     #   dagster
     #   ruff-lsp
+pandas==2.2.0
+    # via ai-kickstart-mlops (pyproject.toml)
 pathspec==0.12.1
     # via black
 pendulum==3.0.0
@@ -131,6 +139,7 @@ python-dateutil==2.8.2
     # via
     #   croniter
     #   dagster
+    #   pandas
     #   pendulum
     #   time-machine
 python-dotenv==1.0.1
@@ -141,6 +150,7 @@ pytz==2024.1
     # via
     #   croniter
     #   dagster
+    #   pandas
 pyyaml==6.0.1
     # via
     #   dagster
@@ -194,7 +204,9 @@ typing-extensions==4.9.0
     #   ruff-lsp
     #   sqlalchemy
 tzdata==2023.4
-    # via pendulum
+    # via
+    #   pandas
+    #   pendulum
 universal-pathlib==0.1.4
     # via dagster
 urllib3==2.2.0
