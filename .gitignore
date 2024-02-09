@@ -1,0 +1,14 @@
+.venv
+.python-version
+__pycache__
+*.pyc
+*.egg-info
+
+.DS_Store
+
+tmp*/
+data/
+model/
+
+mlruns/
+mlartifacts/
