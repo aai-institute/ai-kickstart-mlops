@@ -19,7 +19,8 @@ dependencies = [
 	"dagster==1.6.4",
 	"dagster-webserver==1.6.4",
 	"pandas==2.2.0",
-	"case-converter==1.1.0"
+	"case-converter==1.1.0",
+	"scikit-learn==1.4.0",
 ]
 
 [project.optional-dependencies]
