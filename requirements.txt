@@ -91,7 +91,9 @@ idna==3.6
 jinja2==3.1.3
     # via dagster
 joblib==1.3.2
-    # via scikit-learn
+    # via
+    #   ai-kickstart-mlops (pyproject.toml)
+    #   scikit-learn
 lsprotocol==2023.0.1
     # via
     #   pygls
