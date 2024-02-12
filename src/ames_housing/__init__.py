@@ -8,11 +8,15 @@ from src.ames_housing.constants import (
 )
 
 from ames_housing.assets.ames_housing_data import ames_housing_data
+from ames_housing.assets.ames_housing_features import ames_housing_features
 from ames_housing.io_managers.csv_fs_io_manager import CSVFileSystemIOManager
 from ames_housing.resources.csv_data_set_loader import CSVDataSetLoader
 
 definitions = Definitions(
-    assets=[ames_housing_data],
+    assets=[
+        ames_housing_data,
+        ames_housing_features,
+    ],
     resources={
         "ames_housing_data_set_downloader": CSVDataSetLoader(
             path_or_url=AMES_HOUSING_DATA_SET_URL,
