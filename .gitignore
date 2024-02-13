@@ -9,3 +9,6 @@ __pycache__
 tmp*/
 data/
 model/
+
+mlruns/
+mlartifacts/
