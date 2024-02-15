@@ -4,9 +4,10 @@ import pandas as pd
 from dagster import asset
 
 from ames_housing.constants import SELECTED_FEATURES, TARGET
+from ames_housing.utils import get_key_prefix
 
 
-@asset(io_manager_key="csv_fs_io_manager")
+@asset(io_manager_key="csv_io_manager", key_prefix=get_key_prefix())
 def ames_housing_features(ames_housing_data: pd.DataFrame):
     """Ames housing features.
     

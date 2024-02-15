@@ -16,3 +16,6 @@ TARGET = "sale_price"
 
 MLFLOW_TRACKING_URL = "http://localhost:5000"
 MLFLOW_EXPERIMENT = "Ames housing price prediction"
+
+LAKEFS_REPOSITORY = "ai-kickstart"
+LAKEFS_BRANCH = "main"

@@ -36,12 +36,12 @@ class CSVFileSystemIOManager(BaseFileSystemIOManager):
 
     def load_input(self, context: InputContext) -> pd.DataFrame:
         """Load CSV file into a data frame.
-        
+
         Parameters
         ----------
         context : InputContext
             Dagster context.
-        
+
         Returns
         -------
         pd.DataFrame

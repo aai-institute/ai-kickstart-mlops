@@ -5,9 +5,10 @@ from caseconverter import snakecase
 from dagster import asset
 
 from ames_housing.resources.csv_data_set_loader import CSVDataSetLoader
+from ames_housing.utils import get_key_prefix
 
 
-@asset(io_manager_key="csv_fs_io_manager")
+@asset(io_manager_key="csv_io_manager", key_prefix=get_key_prefix())
 def ames_housing_data(
     ames_housing_data_set_downloader: CSVDataSetLoader,
 ) -> pd.DataFrame:
