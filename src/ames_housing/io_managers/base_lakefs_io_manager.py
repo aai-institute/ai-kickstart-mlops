@@ -1,10 +1,12 @@
 """Base lakeFS IO manager."""
 
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from dagster import ConfigurableIOManager, InputContext, OutputContext
+from lakefs.object import LakeFSIOBase
 from lakefs_spec import LakeFSFileSystem
 from lakefs_spec.transaction import LakeFSTransaction
+from sklearn.utils.metaestimators import abstractmethod
 
 
 class BaseLakeFSIOManager(ConfigurableIOManager):
@@ -84,7 +86,7 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
         return fs.transaction(repository=repository, base_branch=branch)
 
-    def open(self, path: str, mode: str):
+    def open(self, path: str, mode: str) -> LakeFSIOBase:
         """Open a new file object for reading and writing objects from/to lakeFS.
 
         The resulting file object is similar to the build-in Python file objects.
@@ -103,3 +105,49 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         """
         fs = LakeFSFileSystem()
         return fs.open(path, mode)
+
+    def handle_output(self, context: OutputContext, obj: Any) -> None:
+        """Serialize the Python object to an object in lakeFS.
+        
+        Parameters
+        ----------
+        context : OutputContext
+            Dagster context.
+        obj : Any 
+            Python objec that will be serialized to an object in lakeFS.
+        """
+
+        with self.transaction(context) as tx:
+            with self.open(self.get_path(context, transaction=tx), "wb") as f:
+                context.log.debug(f"Writing file at: {self.get_path(context)}")
+                self.write_output(f, obj)
+
+            asset_without_repo_branch = "/".join(context.asset_key.path[2:])
+            tx.commit(message=f"Add asset {asset_without_repo_branch}")
+
+    def load_input(self, context: InputContext) -> Any:
+        """Load file contects into Python object.
+        
+        Parameters
+        ----------
+        context : InputContext
+            Dagster context.
+
+        Returns
+        -------
+        Object with the contents of the file in lakeFS.
+        """
+        path = self.get_path(context)
+        with self.open(path, "r") as f:
+            result = self.read_input(f)
+        return result
+
+    @abstractmethod
+    def write_output(self, f: LakeFSIOBase, obj: Any) -> None:
+        """Write the Python object to an object in lakeFS."""
+        raise NotImplementedError()
+
+    @abstractmethod
+    def read_input(self, f: LakeFSIOBase) -> Any:
+        """Read the object from lakeFS."""
+        raise NotImplementedError()
