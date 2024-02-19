@@ -1,5 +1,7 @@
 """Pickle file object in lakeFS IO manager."""
 
+from typing import Any
+
 import joblib
 from lakefs.object import LakeFSIOBase
 
