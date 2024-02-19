@@ -27,6 +27,7 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         self,
         context: Union[OutputContext, InputContext],
         transaction: Optional[LakeFSTransaction] = None,
+        commit_id: Optional[str] = None,
     ) -> str:
         """Get path in lakeFS based on the asset key.
 
@@ -35,6 +36,9 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
         If a transaction is provided, the temporary branch created for the transaction
         will be used instead of the branch name provided as part of the asset key.
+
+        If a commmit identifier is provided, the branch name will be replaced with the
+        commit id.
 
         Parameters
         ----------
@@ -48,14 +52,19 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         str
             Path to the object in lakeFS.
         """
-        if transaction is None:
-            return "lakefs://" + "/".join(context.asset_key.path) + self.extension
-        else:
+        if transaction is not None:
             repository = context.asset_key.path[0]
             branch = transaction.branch.id
             path = "/".join(context.asset_key.path[2:])
 
             return f"lakefs://{repository}/{branch}/{path}{self.extension}"
+        elif commit_id is not None:
+            repository = context.asset_key.path[0]
+            path = "/".join(context.asset_key.path[2:])
+
+            return f"lakefs://{repository}/{commit_id}/{path}{self.extension}"
+        else:
+            return "lakefs://" + "/".join(context.asset_key.path) + self.extension
 
     def transaction(
         self, context: Union[OutputContext, InputContext]
@@ -123,7 +132,15 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
                 self.write_output(f, obj)
 
             asset_without_repo_branch = "/".join(context.asset_key.path[2:])
-            tx.commit(message=f"Add asset {asset_without_repo_branch}")
+            commit = tx.commit(message=f"Add asset {asset_without_repo_branch}")
+
+        context.add_output_metadata(
+            {
+                "lakefs_commit": commit.id,
+                "lakefs_url": self.get_path(context),
+                "lakefs_permalink": self.get_path(context, commit_id=commit.id),
+            }
+        )
 
     def load_input(self, context: InputContext) -> Any:
         """Load file contects into Python object.
