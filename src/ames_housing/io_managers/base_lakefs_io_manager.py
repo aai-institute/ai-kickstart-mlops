@@ -108,12 +108,12 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
     def handle_output(self, context: OutputContext, obj: Any) -> None:
         """Serialize the Python object to an object in lakeFS.
-        
+
         Parameters
         ----------
         context : OutputContext
             Dagster context.
-        obj : Any 
+        obj : Any
             Python objec that will be serialized to an object in lakeFS.
         """
 
@@ -127,7 +127,7 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
     def load_input(self, context: InputContext) -> Any:
         """Load file contects into Python object.
-        
+
         Parameters
         ----------
         context : InputContext
