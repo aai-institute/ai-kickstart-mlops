@@ -42,3 +42,5 @@ ignore = [
     "E501",
     "F841",
 ]
+
+[tool.dagster]

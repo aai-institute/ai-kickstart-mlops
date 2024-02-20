@@ -4,6 +4,12 @@
 version: "3"
 
 services:
+  dagster:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.10.2
     ports:

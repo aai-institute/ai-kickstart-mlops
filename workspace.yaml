@@ -1,0 +1,4 @@
+load_from:
+  - python_file:
+      relative_path: src/ames_housing/__init__.py
+      working_directory: src/ames_housing/
