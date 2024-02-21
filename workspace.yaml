@@ -1,4 +1,8 @@
 load_from:
-  - python_file:
-      relative_path: src/ames_housing/__init__.py
-      working_directory: src/ames_housing/
+  - grpc_server:
+      host: dagster_grpc_server
+      port: 5432
+      location_name: "ai_kickstart_forests"
+#  - python_file:
+#      relative_path: src/ames_housing/__init__.py
+#      working_directory: src/ames_housing/
