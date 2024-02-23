@@ -10,9 +10,9 @@ from ames_housing.utils import get_key_prefix
 @asset(io_manager_key="csv_io_manager", key_prefix=get_key_prefix())
 def ames_housing_features(ames_housing_data: pd.DataFrame):
     """Ames housing features.
-    
+
     Filter the Ames housing data set for the selected features and target.
-    
+
     Parameters
     ----------
     ames_housing_data : pd.DataFrame

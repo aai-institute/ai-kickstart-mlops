@@ -41,7 +41,7 @@ def _fit_and_score_pipeline(
     with mlflow_session.get_run(context):
         mlflow.sklearn.autolog()
 
-        
+
         pipeline.fit(train_data.drop([TARGET], axis=1), train_data[TARGET])
 
         score = pipeline.score(test_data, test_data[TARGET])
