@@ -1,5 +1,7 @@
 """"CSV file system IO manager"""
 
+import os
+
 import pandas as pd
 from dagster import InputContext, OutputContext
 
@@ -30,6 +32,7 @@ class CSVFileSystemIOManager(BaseFileSystemIOManager):
             Data frame that will be written to a CSV file.
         """
         path = self._get_path(context)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
         context.log.debug(f"Writing file at: {path}")
         obj.to_csv(path)

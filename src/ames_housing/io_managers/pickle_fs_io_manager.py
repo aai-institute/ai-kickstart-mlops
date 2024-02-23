@@ -1,5 +1,6 @@
 """Pickle file system IO manager."""
 
+import os
 from typing import Any
 
 import joblib
@@ -32,6 +33,7 @@ class PickleFileSystemIOManager(BaseFileSystemIOManager):
             Python object that will be serialized to a pickle file.
         """
         path = self._get_path(context)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
         context.log.debug(f"Writing file at: {path}")
         joblib.dump(obj, path)
