@@ -12,7 +12,7 @@ from ames_housing.io_managers.base_fs_io_manager import BaseFileSystemIOManager
 class PickleFileSystemIOManager(BaseFileSystemIOManager):
     """Pickle file system IO manager.
 
-    This IO manager serializes Python objects to pickle files using joblib.
+    This IO manager serializes Python objects to pickle files using `joblib`.
 
     Attributes
     ----------

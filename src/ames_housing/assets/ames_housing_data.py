@@ -16,7 +16,7 @@ def ames_housing_data(
 
     Parameters
     ----------
-    ames_housing_data_set_loader : CSVDataSetLoader
+    ames_housing_data_set_downloader : CSVDataSetLoader
         Raw data set loader.
 
     Returns

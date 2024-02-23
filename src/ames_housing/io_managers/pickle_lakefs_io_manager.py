@@ -12,7 +12,7 @@ class PickleLakeFSIOManager(BaseLakeFSIOManager):
     """Pickle file object in lakeFS IO manager.
 
     This IO manager serializes Python objects to Pickle files in a lakeFS repository
-    using joblib.
+    using `joblib`.
     """
 
     extension: str = ".pkl"
