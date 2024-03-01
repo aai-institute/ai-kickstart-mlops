@@ -10,7 +10,7 @@ Follow these steps in a local clone of the repository to reproduce the example D
 - Create a Python virtual environment and install dependencies (macOS/Linux): `python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt -e .`
 - Optionally (not required when running locally with Docker Compose): Set MLFlow tracking URL and credentials and lakeFS repository information in `src/ames_housing/constants.py`
 - Start MLOps tool stack in Docker (in a separate shell): `docker compose -f stack/docker-compose.yml up`
-- Run Dagster: `dagster dev -f src/ames_housing/__init__.py`
+- Run Dagster: `dagster dev -m ames_housing`
 - Access Dagster web UI: http://localhost:3000
 - Click the _Materialize all_ button to run the model training pipeline
 - Observe the tracked experiment in MLflow: http://localhost:5000 (if using Docker Compose)
@@ -21,7 +21,7 @@ By default, data and models created by the workflow are persisted in the file sy
 If you want to persist these assets in lakeFS instead, set the `ENV` environment variable to `production` when running Dagster:
 
 ```
-ENV=production dagster dev -f src/ames_housing/__init__.py
+ENV=production dagster dev -m ames_housing
 ```
 
 Make sure to create a repository named `ai-kickstart` in the [lakeFS web UI](http://localhost:8000) before materializing the assets in Dagster (the Docker Compose setup uses the default [lakeFS quickstart](https://docs.lakefs.io/quickstart/) credentials for login: Access key ID `AKIAIOSFOLQUICKSTART`, secret access key `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`).
