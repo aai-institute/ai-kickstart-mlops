@@ -32,6 +32,11 @@ services:
       - 5432:5432
     networks:
       - ai_kickstart_network
+    healthcheck:
+      test: [ "CMD", "echo", "ps", "$PID" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   dagster_webserver:
     build:
@@ -59,7 +64,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     depends_on:
-      - dagster_grpc_server
+      dagster_grpc_server:
+        condition: service_healthy
     networks:
       - ai_kickstart_network
 
@@ -82,7 +88,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     depends_on:
-      - dagster_grpc_server
+      dagster_grpc_server:
+        condition: service_healthy
     networks:
       - ai_kickstart_network
 
