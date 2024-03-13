@@ -15,6 +15,8 @@ SELECTED_FEATURES = {
 TARGET = "sale_price"
 
 MLFLOW_TRACKING_URL = "http://mlflow:4000"
+MLFLOW_USERNAME = None
+MLFLOW_PASSWORD = None
 MLFLOW_EXPERIMENT = "Ames housing price prediction"
 
 LAKEFS_REPOSITORY = "ai-kickstart"

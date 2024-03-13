@@ -1,5 +1,7 @@
 """"CSV file system IO manager"""
 
+import os
+
 import pandas as pd
 from dagster import InputContext, OutputContext
 
@@ -9,7 +11,7 @@ from ames_housing.io_managers.base_fs_io_manager import BaseFileSystemIOManager
 class CSVFileSystemIOManager(BaseFileSystemIOManager):
     """CSV file system IO manager.
 
-    This IO manager serializes Pandas data frame to CSV files on the local file syttem.
+    This IO manager serializes Pandas data frames to CSV files on the local file system.
 
     Attributes
     ----------
@@ -30,7 +32,7 @@ class CSVFileSystemIOManager(BaseFileSystemIOManager):
             Data frame that will be written to a CSV file.
         """
         path = self._get_path(context)
-
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         context.log.debug(f"Writing file at: {path}")
         obj.to_csv(path)
 

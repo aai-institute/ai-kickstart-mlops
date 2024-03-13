@@ -3,14 +3,6 @@
 import os
 
 from dagster import Definitions
-from src.ames_housing.constants import (
-    AMES_HOUSING_DATA_SET_SEPARATOR,
-    AMES_HOUSING_DATA_SET_URL,
-    DATA_BASE_DIR,
-    MLFLOW_EXPERIMENT,
-    MLFLOW_TRACKING_URL,
-    MODEL_BASE_DIR,
-)
 
 from ames_housing.assets.ames_housing_data import ames_housing_data
 from ames_housing.assets.ames_housing_features import ames_housing_features
@@ -20,6 +12,17 @@ from ames_housing.assets.price_prediction_models import (
     price_prediction_random_forest_model,
 )
 from ames_housing.assets.train_test import train_test_data
+
+from ames_housing.constants import (
+    AMES_HOUSING_DATA_SET_SEPARATOR,
+    AMES_HOUSING_DATA_SET_URL,
+    DATA_BASE_DIR,
+    MLFLOW_EXPERIMENT,
+    MLFLOW_PASSWORD,
+    MLFLOW_TRACKING_URL,
+    MLFLOW_USERNAME,
+    MODEL_BASE_DIR,
+)
 from ames_housing.io_managers.csv_fs_io_manager import CSVFileSystemIOManager
 from ames_housing.io_managers.csv_lakefs_io_manager import CSVLakeFSIOManager
 from ames_housing.io_managers.pickle_fs_io_manager import PickleFileSystemIOManager
@@ -51,7 +54,10 @@ definitions = Definitions(
             separator=AMES_HOUSING_DATA_SET_SEPARATOR,
         ),
         "mlflow_session": MlflowSession(
-            tracking_url=MLFLOW_TRACKING_URL, experiment=MLFLOW_EXPERIMENT
+            tracking_url=MLFLOW_TRACKING_URL,
+            username=MLFLOW_USERNAME,
+            password=MLFLOW_PASSWORD,
+            experiment=MLFLOW_EXPERIMENT,
         ),
         "csv_io_manager": csv_io_manager,
         "pickle_io_manager": pickle_io_manager,
