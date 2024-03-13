@@ -15,8 +15,6 @@ RUN python -m pip install /opt/dagster/app/
 
 WORKDIR /opt/dagster/app
 
-COPY src/ames_housing/__init__.py /opt/dagster/app
-
 # CMD allows this to be overridden from run launchers or executors that want
 # to run other commands against your repository
 CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "5432", "-m", "ames_housing"]
