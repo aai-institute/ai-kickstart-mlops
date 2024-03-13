@@ -16,8 +16,9 @@ maintainers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-	"dagster==1.6.4",
-	"dagster-webserver==1.6.4",
+	"dagster==1.6.9",
+	"dagster-webserver==1.6.9",
+	"dagster-postgres==0.22.9",
 	"pandas==2.2.0",
 	"case-converter==1.1.0",
 	"scikit-learn==1.4.0",

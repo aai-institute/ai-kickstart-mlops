@@ -58,6 +58,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      - dagster_grpc_server
     networks:
       - ai_kickstart_network
 
@@ -79,6 +81,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      - dagster_grpc_server
     networks:
       - ai_kickstart_network
 
