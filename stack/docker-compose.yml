@@ -110,7 +110,6 @@ services:
     ports:
       - 8000:8000
     container_name: lakefs
-
     environment:
       LAKEFS_INSTALLATION_USER_NAME: "quickstart"
       LAKEFS_INSTALLATION_ACCESS_KEY_ID: "AKIAIOSFOLQUICKSTART"
@@ -118,6 +117,8 @@ services:
       LAKEFS_DATABASE_TYPE: "local"
       LAKEFS_AUTH_ENCRYPT_SECRET_KEY: "THIS_MUST_BE_CHANGED_IN_PRODUCTION"
       LAKEFS_BLOCKSTORE_TYPE: "local"
+    networks:
+      - ai_kickstart_network
 
 
 networks:

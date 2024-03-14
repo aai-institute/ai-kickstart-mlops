@@ -17,4 +17,5 @@ WORKDIR /opt/dagster/app
 
 # CMD allows this to be overridden from run launchers or executors that want
 # to run other commands against your repository
-CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "5432", "-m", "ames_housing"]
+CMD ["dagster", "code-server", "start", "-h", "0.0.0.0", "-p", "5432", "-m", "ames_housing"]
+
