@@ -35,6 +35,7 @@ class MlflowSession(ConfigurableResource):
         dagster_asset_key = context.asset_key.to_user_string()
 
         run_name = f"{dagster_asset_key}-{dagster_run_id}"
+
         active_run = mlflow.active_run()
         if active_run is None:
             current_runs = mlflow.search_runs(

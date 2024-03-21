@@ -3,17 +3,28 @@
 
 version: "3"
 
+include:
+  - dagster_docker-compose.yml
+
 services:
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.10.2
+    container_name: mlflow
+    expose:
+      - 4000
     ports:
-      - 5000:5000
-    command: mlflow server --host 0.0.0.0 --port 5000
-
+      - 4000:4000
+    command: mlflow server --host 0.0.0.0 --port 4000
+    networks:
+      - ai_kickstart_network
+  
   lakefs:
-    image: treeverse/lakefs:1.12.1
+    image: treeverse/lakefs:1.7.0
+    expose:
+      - 8000
     ports:
       - 8000:8000
+    container_name: lakefs
     environment:
       LAKEFS_INSTALLATION_USER_NAME: "quickstart"
       LAKEFS_INSTALLATION_ACCESS_KEY_ID: "AKIAIOSFOLQUICKSTART"
@@ -21,3 +32,11 @@ services:
       LAKEFS_DATABASE_TYPE: "local"
       LAKEFS_AUTH_ENCRYPT_SECRET_KEY: "THIS_MUST_BE_CHANGED_IN_PRODUCTION"
       LAKEFS_BLOCKSTORE_TYPE: "local"
+    networks:
+      - ai_kickstart_network
+
+
+networks:
+  ai_kickstart_network:
+    driver: bridge
+    name: ai_kickstart_network
