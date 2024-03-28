@@ -21,3 +21,5 @@ MLFLOW_EXPERIMENT = "Ames housing price prediction"
 
 LAKEFS_REPOSITORY = "ai-kickstart"
 LAKEFS_BRANCH = "main"
+LAKEFS_DATA_PATH = ["data"]
+LAKEFS_MODEL_PATH = ["models"]

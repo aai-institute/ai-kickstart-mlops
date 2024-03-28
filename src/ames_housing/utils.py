@@ -1,12 +1,12 @@
 """Utilities."""
 
-import os
-from typing import List
+from typing import Union
 
-from ames_housing.constants import LAKEFS_BRANCH, LAKEFS_REPOSITORY
+from dagster import InputContext, OutputContext
 
 
-def get_key_prefix() -> List[str]:
-    if os.environ.get("ENV") == "production":
-        return [LAKEFS_REPOSITORY, LAKEFS_BRANCH]
-    return []
+def get_metadata(context: Union[OutputContext, InputContext]) -> dict:
+    if isinstance(context, OutputContext):
+        return context.metadata
+    else:  # type is InputContext
+        return context.upstream_output.metadata

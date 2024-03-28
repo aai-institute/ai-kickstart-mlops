@@ -5,10 +5,14 @@ import pandas as pd
 from dagster import AssetExecutionContext, asset
 from sklearn.pipeline import Pipeline
 
-from ames_housing.constants import TARGET
+from ames_housing.constants import (
+    LAKEFS_BRANCH,
+    LAKEFS_MODEL_PATH,
+    LAKEFS_REPOSITORY,
+    TARGET,
+)
 from ames_housing.model_factory import ModelFactory
 from ames_housing.resources.mlflow_session import MlflowSession
-from ames_housing.utils import get_key_prefix
 
 
 def _fit_and_score_pipeline(
@@ -49,7 +53,11 @@ def _fit_and_score_pipeline(
     return pipeline
 
 
-@asset(io_manager_key="pickle_io_manager", key_prefix=get_key_prefix())
+@asset(io_manager_key="pickle_io_manager", metadata={
+                "repository": LAKEFS_REPOSITORY,
+                "branch": LAKEFS_BRANCH,
+                "path": LAKEFS_MODEL_PATH,
+            })
 def price_prediction_linear_regression_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,
@@ -66,7 +74,11 @@ def price_prediction_linear_regression_model(
     )
 
 
-@asset(io_manager_key="pickle_io_manager", key_prefix=get_key_prefix())
+@asset(io_manager_key="pickle_io_manager", metadata={
+                "repository": LAKEFS_REPOSITORY,
+                "branch": LAKEFS_BRANCH,
+                "path": LAKEFS_MODEL_PATH,
+            })
 def price_prediction_random_forest_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,
@@ -83,7 +95,11 @@ def price_prediction_random_forest_model(
     )
 
 
-@asset(io_manager_key="pickle_io_manager", key_prefix=get_key_prefix())
+@asset(io_manager_key="pickle_io_manager", metadata={
+                "repository": LAKEFS_REPOSITORY,
+                "branch": LAKEFS_BRANCH,
+                "path": LAKEFS_MODEL_PATH,
+            })
 def price_prediction_gradient_boosting_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,
