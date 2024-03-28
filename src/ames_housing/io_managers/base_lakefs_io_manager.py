@@ -1,6 +1,7 @@
 """Base lakeFS IO manager."""
 
 from typing import Any, Optional, Union
+from pathlib import PosixPath
 
 from dagster import ConfigurableIOManager, InputContext, OutputContext
 from lakefs.object import LakeFSIOBase
@@ -58,9 +59,7 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         metadata = get_metadata(context)
 
         repository = metadata.get("repository")
-
-        asset_path = metadata.get("path") + context.asset_key.path
-        path = "/".join(asset_path)
+        path = PosixPath(*(metadata.get("path") + context.asset_key.path))
 
         if transaction is not None:
             branch = transaction.branch.id
@@ -136,7 +135,7 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
                 context.log.debug(f"Writing file at: {self.get_path(context)}")
                 self.write_output(f, obj)
 
-            asset_name = "/".join(context.asset_key.path)
+            asset_name = PosixPath(*context.asset_key.path)
             commit = tx.commit(message=f"Add asset {asset_name}")
 
         context.add_output_metadata(
