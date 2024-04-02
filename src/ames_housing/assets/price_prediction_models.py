@@ -53,11 +53,12 @@ def _fit_and_score_pipeline(
     return pipeline
 
 
-@asset(io_manager_key="pickle_io_manager", metadata={
-                "repository": LAKEFS_REPOSITORY,
-                "branch": LAKEFS_BRANCH,
-                "path": LAKEFS_MODEL_PATH,
-            })
+@asset(
+    io_manager_key="pickle_io_manager",
+    metadata={
+        "path": LAKEFS_MODEL_PATH,
+    },
+)
 def price_prediction_linear_regression_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,
@@ -74,11 +75,12 @@ def price_prediction_linear_regression_model(
     )
 
 
-@asset(io_manager_key="pickle_io_manager", metadata={
-                "repository": LAKEFS_REPOSITORY,
-                "branch": LAKEFS_BRANCH,
-                "path": LAKEFS_MODEL_PATH,
-            })
+@asset(
+    io_manager_key="pickle_io_manager",
+    metadata={
+        "path": LAKEFS_MODEL_PATH,
+    },
+)
 def price_prediction_random_forest_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,
@@ -95,11 +97,12 @@ def price_prediction_random_forest_model(
     )
 
 
-@asset(io_manager_key="pickle_io_manager", metadata={
-                "repository": LAKEFS_REPOSITORY,
-                "branch": LAKEFS_BRANCH,
-                "path": LAKEFS_MODEL_PATH,
-            })
+@asset(
+    io_manager_key="pickle_io_manager",
+    metadata={
+        "path": LAKEFS_MODEL_PATH,
+    },
+)
 def price_prediction_gradient_boosting_model(
     context: AssetExecutionContext,
     mlflow_session: MlflowSession,

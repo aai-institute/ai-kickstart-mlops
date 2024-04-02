@@ -7,9 +7,7 @@ from dagster import AssetOut, multi_asset
 from sklearn.model_selection import train_test_split
 
 from ames_housing.constants import (
-    LAKEFS_BRANCH,
     LAKEFS_DATA_PATH,
-    LAKEFS_REPOSITORY,
     RANDOM_STATE,
 )
 
@@ -19,16 +17,12 @@ from ames_housing.constants import (
         "train_data": AssetOut(
             io_manager_key="csv_io_manager",
             metadata={
-                "repository": LAKEFS_REPOSITORY,
-                "branch": LAKEFS_BRANCH,
                 "path": LAKEFS_DATA_PATH,
             },
         ),
         "test_data": AssetOut(
             io_manager_key="csv_io_manager",
             metadata={
-                "repository": LAKEFS_REPOSITORY,
-                "branch": LAKEFS_BRANCH,
                 "path": LAKEFS_DATA_PATH,
             },
         ),

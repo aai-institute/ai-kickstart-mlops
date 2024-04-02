@@ -4,9 +4,7 @@ import pandas as pd
 from dagster import asset
 
 from ames_housing.constants import (
-    LAKEFS_BRANCH,
     LAKEFS_DATA_PATH,
-    LAKEFS_REPOSITORY,
     SELECTED_FEATURES,
     TARGET,
 )
@@ -15,8 +13,6 @@ from ames_housing.constants import (
 @asset(
     io_manager_key="csv_io_manager",
     metadata={
-        "repository": LAKEFS_REPOSITORY,
-        "branch": LAKEFS_BRANCH,
         "path": LAKEFS_DATA_PATH,
     },
 )

@@ -4,15 +4,13 @@ import pandas as pd
 from caseconverter import snakecase
 from dagster import asset
 
-from ames_housing.constants import LAKEFS_BRANCH, LAKEFS_DATA_PATH, LAKEFS_REPOSITORY
+from ames_housing.constants import LAKEFS_DATA_PATH
 from ames_housing.resources.csv_data_set_loader import CSVDataSetLoader
 
 
 @asset(
     io_manager_key="csv_io_manager",
     metadata={
-        "repository": LAKEFS_REPOSITORY,
-        "branch": LAKEFS_BRANCH,
         "path": LAKEFS_DATA_PATH,
     },
 )

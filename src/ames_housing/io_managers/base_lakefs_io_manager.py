@@ -1,7 +1,7 @@
 """Base lakeFS IO manager."""
 
-from typing import Any, Optional, Union
 from pathlib import PosixPath
+from typing import Any, Optional, Union
 
 from dagster import ConfigurableIOManager, InputContext, OutputContext
 from lakefs.object import LakeFSIOBase
@@ -26,6 +26,9 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
     extension: str
 
+    repository: str
+    branch: str
+
     def get_path(
         self,
         context: Union[OutputContext, InputContext],
@@ -33,9 +36,6 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         commit_id: Optional[str] = None,
     ) -> str:
         """Get path in lakeFS based on the asset key.
-
-        By convention, the asset key contains the repository and branch name as the
-        first two elements.
 
         If a transaction is provided, the temporary branch created for the transaction
         will be used instead of the branch name provided as part of the asset key.
@@ -58,7 +58,6 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
         metadata = get_metadata(context)
 
-        repository = metadata.get("repository")
         path = PosixPath(*(metadata.get("path") + context.asset_key.path))
 
         if transaction is not None:
@@ -66,58 +65,9 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         elif commit_id is not None:
             branch = commit_id
         else:
-            branch = metadata.get("branch")
+            branch = self.branch
 
-        return f"lakefs://{repository}/{branch}/{path}{self.extension}"
-
-    def transaction(
-        self, context: Union[OutputContext, InputContext]
-    ) -> LakeFSTransaction:
-        """Start new lakeFS-spec transaction.
-
-        The repository and branch are extracted from the context metadata.
-
-        The resulting transaction can be used as context manager.
-
-        Parameters
-        ----------
-        context : Union[OutputContext, InputContext]
-            Dagster context
-
-        Returns
-        -------
-        LakeFSTransaction
-            lakeFS-spec transaction context.
-        """
-        fs = LakeFSFileSystem()
-
-        metadata = get_metadata(context)
-
-        # By convention, the repository name and the path are passed via the metadata.
-        repository = metadata.get("repository")
-        branch = metadata.get("branch")
-
-        return fs.transaction(repository=repository, base_branch=branch)
-
-    def open(self, path: str, mode: str) -> LakeFSIOBase:
-        """Open a new file object for reading and writing objects from/to lakeFS.
-
-        The resulting file object is similar to the build-in Python file objects.
-
-        Parameters
-        ----------
-        path : str
-            Path to file in lakeFS, following the "lakefs://" URI format.
-        mode : str
-            Mode in which the file is opened.
-
-        Returns
-        -------
-        LakeFSIOBase
-            File object that is ready for reading/writing.
-        """
-        fs = LakeFSFileSystem()
-        return fs.open(path, mode)
+        return f"lakefs://{self.repository}/{branch}/{path}{self.extension}"
 
     def handle_output(self, context: OutputContext, obj: Any) -> None:
         """Serialize the Python object to an object in lakeFS.
@@ -130,8 +80,10 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
             Python objec that will be serialized to an object in lakeFS.
         """
 
-        with self.transaction(context) as tx:
-            with self.open(self.get_path(context, transaction=tx), "wb") as f:
+        fs = LakeFSFileSystem()
+
+        with fs.transaction(repository=self.repository, base_branch=self.branch) as tx:
+            with fs.open(self.get_path(context, transaction=tx), "wb") as f:
                 context.log.debug(f"Writing file at: {self.get_path(context)}")
                 self.write_output(f, obj)
 
@@ -158,8 +110,11 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         -------
         Object with the contents of the file in lakeFS.
         """
+
+        fs = LakeFSFileSystem()
+
         path = self.get_path(context)
-        with self.open(path, "r") as f:
+        with fs.open(path, "r") as f:
             result = self.read_input(f)
         return result
 

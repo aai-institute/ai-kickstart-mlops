@@ -2,7 +2,7 @@
 
 import os
 
-from dagster import Definitions
+from dagster import Definitions, repository
 
 from ames_housing.assets.ames_housing_data import ames_housing_data
 from ames_housing.assets.ames_housing_features import ames_housing_features
@@ -16,6 +16,8 @@ from ames_housing.constants import (
     AMES_HOUSING_DATA_SET_SEPARATOR,
     AMES_HOUSING_DATA_SET_URL,
     DATA_BASE_DIR,
+    LAKEFS_BRANCH,
+    LAKEFS_REPOSITORY,
     MLFLOW_EXPERIMENT,
     MLFLOW_PASSWORD,
     MLFLOW_TRACKING_URL,
@@ -31,8 +33,12 @@ from ames_housing.resources.mlflow_session import MlflowSession
 
 # Depending on the environment, serialize assets to the local file system or to lakeFS.
 if os.environ.get("ENV") == "production":
-    csv_io_manager = CSVLakeFSIOManager()
-    pickle_io_manager = PickleLakeFSIOManager()
+    csv_io_manager = CSVLakeFSIOManager(
+        repository=LAKEFS_REPOSITORY, branch=LAKEFS_BRANCH
+    )
+    pickle_io_manager = PickleLakeFSIOManager(
+        repository=LAKEFS_REPOSITORY, branch=LAKEFS_BRANCH
+    )
 else:
     csv_io_manager = CSVFileSystemIOManager(base_dir=DATA_BASE_DIR)
     pickle_io_manager = PickleFileSystemIOManager(base_dir=MODEL_BASE_DIR)
@@ -60,6 +66,5 @@ definitions = Definitions(
         ),
         "csv_io_manager": csv_io_manager,
         "pickle_io_manager": pickle_io_manager,
-        "csv_lakefs_io_manager": CSVLakeFSIOManager(),
     },
 )
