@@ -1,0 +1,5 @@
+load_from:
+  - grpc_server:
+      host: dagster_grpc_server
+      port: 5432
+      location_name: "ai_kickstart_forests"
