@@ -33,6 +33,7 @@ class CSVFileSystemIOManager(BaseFileSystemIOManager):
         """
         path = self._get_path(context)
         os.makedirs(os.path.dirname(path), exist_ok=True)
+
         context.log.debug(f"Writing file at: {path}")
         obj.to_csv(path)
 

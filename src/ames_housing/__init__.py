@@ -12,7 +12,6 @@ from ames_housing.assets.price_prediction_models import (
     price_prediction_random_forest_model,
 )
 from ames_housing.assets.train_test import train_test_data
-
 from ames_housing.constants import (
     AMES_HOUSING_DATA_SET_SEPARATOR,
     AMES_HOUSING_DATA_SET_URL,

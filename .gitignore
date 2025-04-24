@@ -6,9 +6,6 @@ __pycache__
 
 .DS_Store
 
-.idea
-build/
-
 tmp*/
 data/
 model/
