@@ -40,7 +40,6 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         If a transaction is provided, the temporary branch created for the transaction
         will be used instead of the branch name provided as part of the asset key.
 
-
         If a commit identifier is provided, the branch name will be replaced with the
         commit id.
 

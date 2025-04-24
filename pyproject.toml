@@ -9,16 +9,15 @@ version = "0.1.0"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [
-	{ name = "appliedAI Institute for Europe", email = "opensource@appliedai-institute.de" }
+	{ name = "appliedAI Institute for Europe", email = "opensource@appliedai-institute.de" },
 ]
 maintainers = [
-	{ name = "Jan Willem Kleinrouweler", email = "janwillem@appliedai-institute.de" }
+	{ name = "Jan Willem Kleinrouweler", email = "janwillem@appliedai-institute.de" },
 ]
 requires-python = ">=3.9"
 dependencies = [
-	"dagster==1.6.6",
-	"dagster-webserver==1.6.6",
-	"dagster-postgres==0.22.6",
+	"dagster==1.8.4",
+	"dagster-webserver==1.8.4",
 	"pandas==2.2.0",
 	"case-converter==1.1.0",
 	"scikit-learn==1.4.0",
@@ -28,7 +27,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-
 dev = ["black", "ruff", "ruff-lsp"]
 
 [tool.ruff]
@@ -36,6 +34,4 @@ src = ["src"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
-
-[tool.dagster]
 ignore = ["E501", "F841"]

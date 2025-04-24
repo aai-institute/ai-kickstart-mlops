@@ -33,7 +33,6 @@ class PickleFileSystemIOManager(BaseFileSystemIOManager):
             Python object that will be serialized to a pickle file.
         """
         path = self._get_path(context)
-
         os.makedirs(os.path.dirname(path), exist_ok=True)
 
         context.log.debug(f"Writing file at: {path}")
