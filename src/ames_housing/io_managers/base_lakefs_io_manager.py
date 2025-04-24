@@ -1,5 +1,6 @@
 """Base lakeFS IO manager."""
 
+from pathlib import PosixPath
 from typing import Any, Optional, Union
 
 from dagster import ConfigurableIOManager, InputContext, OutputContext
@@ -7,6 +8,8 @@ from lakefs.object import LakeFSIOBase
 from lakefs_spec import LakeFSFileSystem
 from lakefs_spec.transaction import LakeFSTransaction
 from sklearn.utils.metaestimators import abstractmethod
+
+from ames_housing.utils import get_metadata
 
 
 class BaseLakeFSIOManager(ConfigurableIOManager):
@@ -23,6 +26,9 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
 
     extension: str
 
+    repository: str
+    branch: str
+
     def get_path(
         self,
         context: Union[OutputContext, InputContext],
@@ -30,9 +36,6 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         commit_id: Optional[str] = None,
     ) -> str:
         """Get path in lakeFS based on the asset key.
-
-        By convention, the asset key contains the repository and branch name as the
-        first two elements.
 
         If a transaction is provided, the temporary branch created for the transaction
         will be used instead of the branch name provided as part of the asset key.
@@ -53,68 +56,19 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         str
             Path to the object in lakeFS.
         """
+
+        metadata = get_metadata(context)
+
+        path = PosixPath(*(metadata.get("path") + context.asset_key.path))
+
         if transaction is not None:
-            repository = context.asset_key.path[0]
             branch = transaction.branch.id
-            path = "/".join(context.asset_key.path[2:])
-
-            return f"lakefs://{repository}/{branch}/{path}{self.extension}"
         elif commit_id is not None:
-            repository = context.asset_key.path[0]
-            path = "/".join(context.asset_key.path[2:])
-
-            return f"lakefs://{repository}/{commit_id}/{path}{self.extension}"
+            branch = commit_id
         else:
-            return "lakefs://" + "/".join(context.asset_key.path) + self.extension
+            branch = self.branch
 
-    def transaction(
-        self, context: Union[OutputContext, InputContext]
-    ) -> LakeFSTransaction:
-        """Start new lakeFS-spec transaction.
-
-        The repository and branch are determined by the first two elements in the
-        asset key.
-
-        The resulting transaction can be used as context manager.
-
-        Parameters
-        ----------
-        context : Union[OutputContext, InputContext]
-            Dagster context
-
-        Returns
-        -------
-        LakeFSTransaction
-            lakeFS-spec transaction context.
-        """
-        fs = LakeFSFileSystem()
-
-        # By convention, the asset key starts with the repository, followed by the
-        # branch, followed by the path to the object.
-        repository = context.asset_key.path[0]
-        branch = context.asset_key.path[1]
-
-        return fs.transaction(repository=repository, base_branch=branch)
-
-    def open(self, path: str, mode: str) -> LakeFSIOBase:
-        """Open a new file object for reading and writing objects from/to lakeFS.
-
-        The resulting file object is similar to the build-in Python file objects.
-
-        Parameters
-        ----------
-        path : str
-            Path to file in lakeFS, following the "lakefs://" URI format.
-        mode : str
-            Mode in which the file is opened.
-
-        Returns
-        -------
-        LakeFSIOBase
-            File object that is ready for reading/writing.
-        """
-        fs = LakeFSFileSystem()
-        return fs.open(path, mode)
+        return f"lakefs://{self.repository}/{branch}/{path}{self.extension}"
 
     def handle_output(self, context: OutputContext, obj: Any) -> None:
         """Serialize the Python object to an object in lakeFS.
@@ -127,13 +81,15 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
             Python objec that will be serialized to an object in lakeFS.
         """
 
-        with self.transaction(context) as tx:
-            with self.open(self.get_path(context, transaction=tx), "wb") as f:
+        fs = LakeFSFileSystem()
+
+        with fs.transaction(repository=self.repository, base_branch=self.branch) as tx:
+            with fs.open(self.get_path(context, transaction=tx), "wb") as f:
                 context.log.debug(f"Writing file at: {self.get_path(context)}")
                 self.write_output(f, obj)
 
-            asset_without_repo_branch = "/".join(context.asset_key.path[2:])
-            commit = tx.commit(message=f"Add asset {asset_without_repo_branch}")
+            asset_name = PosixPath(*context.asset_key.path)
+            commit = tx.commit(message=f"Add asset {asset_name}")
 
         context.add_output_metadata(
             {
@@ -155,8 +111,11 @@ class BaseLakeFSIOManager(ConfigurableIOManager):
         -------
         Object with the contents of the file in lakeFS.
         """
+
+        fs = LakeFSFileSystem()
+
         path = self.get_path(context)
-        with self.open(path, "r") as f:
+        with fs.open(path, "r") as f:
             result = self.read_input(f)
         return result
 
